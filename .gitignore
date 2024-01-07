@@ -378,3 +378,5 @@ android/pytorch_android_torchvision/.cxx
 
 # Custom files
 data/
+lightning_logs/
+logs/

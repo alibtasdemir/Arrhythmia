@@ -5,19 +5,24 @@ from torch.utils.data import Dataset
 
 
 class ECGDataset(Dataset):
-    def __init__(self, df: pandas.DataFrame):
-        self.dataframe = df
-        self.data_columns = self.dataframe.columns[:-2].tolist()
+
+    def __init__(self, df):
+        self.df = df
+        self.data_columns = self.df.columns[:-2].tolist()
 
     def __getitem__(self, idx):
-        signal = self.dataframe.loc[idx, self.data_columns].astype('float32')
-        signal = torch.from_numpy(signal.values).float()
-        # signal = torch.FloatTensor([signal.values])
-        target = torch.LongTensor(np.array(self.dataframe.loc[idx, 'class']))
+        signal = self.df.loc[idx, self.data_columns].astype('float32')
+        signal_arr = signal.values
+        signal = torch.tensor(signal_arr, dtype=torch.float32).unsqueeze(0)
+        #signal2 = torch.FloatTensor([signal.values])
+        #print(signal_arr.shape)
+        #print(signal1.shape)
+        #print(signal2.shape)
+        target = torch.LongTensor(np.array(self.df.loc[idx, 'class']))
         return signal, target
 
     def __len__(self):
-        return len(self.dataframe)
+        return len(self.df)
 
 
 """

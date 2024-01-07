@@ -1,22 +1,28 @@
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-import numpy as np
+from pytorch_lightning import Trainer
 
 from config import Config, seed_everything
+from dataset.dataset import ECGDataset
+from model.cnn_wrapper import CNNWrapper
 from util.dataloaders import get_dataloader
+import pandas as pd
 
 if __name__ == '__main__':
-    id_to_label = {
-        0: "Normal",
-        1: "Artial Premature",
-        2: "Premature ventricular contraction",
-        3: "Fusion of ventricular and normal",
-        4: "Fusion of paced and normal"
-    }
-
     config = Config()
     seed_everything(config.seed)
-    train_dl = get_dataloader(config, "train")
-    item = next(iter(train_dl))
-    print(item)
+    train_loader = get_dataloader(config, phase='train')
+    val_loader = get_dataloader(config, phase='val')
+
+    model = CNNWrapper(num_classes=5, hid_size=128)
+    trainer = Trainer(max_epochs=10)
+    trainer.fit(model, train_loader, val_loader)
+
+    #ecg = ECGDataset(pd.read_csv(config.train_csv_path))
+    #ecg[0]
+    """
+    
+    df = pd.read_csv(config.train_csv_path)
+    print(df.shape)
+    print(df.head())
+    train_loader = get_dataloader(config, phase='train')
+    print(len(train_loader))
+    """

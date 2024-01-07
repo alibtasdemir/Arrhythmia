@@ -8,13 +8,15 @@ class Config:
     csv_path = ''
     device = 'cuda:0' if torch.cuda.is_available() else "cpu"
     lstm_logs = 'lstm_logs/lstm.csv'
-    train_csv_path = "data.csv"
+
+    train_csv_path = "data/mitbih_with_syntetic_train.csv"
+    test_csv_path = "data/mitbih_with_syntetic_test.csv"
 
     # Train variables
     num_workers = 4
     batch_size = 128
     learning_rate = 0.001
-    num_epochs = 100
+    num_epochs = 2
 
 
 def seed_everything(seed: int):
