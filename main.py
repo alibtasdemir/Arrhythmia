@@ -13,7 +13,7 @@ if __name__ == '__main__':
     train_loader = get_dataloader(config, phase='train')
     val_loader = get_dataloader(config, phase='val')
 
-    model = CNNWrapper(num_classes=5, hid_size=128)
+    model = CNNWrapper(config)
     trainer = Trainer(max_epochs=config.num_epochs)
     trainer.fit(model, train_loader, val_loader)
 
