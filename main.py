@@ -1,25 +1,25 @@
 from pytorch_lightning import Trainer
 
 from config import Config, seed_everything
-from dataset.dataset import ECGDataset
+
 from model.cnn_wrapper import CNNWrapper
 from util.dataloaders import get_dataloader
-import pandas as pd
+from util.parser import parse_train_args
 
 if __name__ == '__main__':
-    config = Config()
+    args = parse_train_args()
+    config = Config(args)
     seed_everything(config.seed)
     train_loader = get_dataloader(config, phase='train')
     val_loader = get_dataloader(config, phase='val')
 
     model = CNNWrapper(num_classes=5, hid_size=128)
-    trainer = Trainer(max_epochs=10)
+    trainer = Trainer(max_epochs=config.num_epochs)
     trainer.fit(model, train_loader, val_loader)
 
-    #ecg = ECGDataset(pd.read_csv(config.train_csv_path))
-    #ecg[0]
-    """
-    
+    # ecg = ECGDataset(pd.read_csv(config.train_csv_path))
+    # ecg[0]
+    """ 
     df = pd.read_csv(config.train_csv_path)
     print(df.shape)
     print(df.head())

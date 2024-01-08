@@ -14,5 +14,10 @@ def get_dataloader(config: Config, phase: str):
     train_df, val_df = train_df.reset_index(drop=True), val_df.reset_index(drop=True)
     df = train_df if phase == 'train' else val_df
     dataset = ECGDataset(df)
-    dataloader = DataLoader(dataset=dataset, batch_size=config.batch_size, num_workers=4)
+    dataloader = DataLoader(
+        dataset=dataset,
+        batch_size=config.batch_size,
+        num_workers=config.num_workers,
+        persistent_workers=True
+    )
     return dataloader
