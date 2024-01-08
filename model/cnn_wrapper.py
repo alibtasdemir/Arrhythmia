@@ -1,5 +1,7 @@
 import torch
 from pytorch_lightning import LightningModule
+from pytorch_lightning.utilities.types import EPOCH_OUTPUT
+from sklearn.metrics import accuracy_score
 
 from model.cnn import CNN
 
@@ -13,6 +15,7 @@ class CNNWrapper(LightningModule):
             num_classes=5,
     ):
         super().__init__()
+        self.save_hyperparameters()
         self.model = CNN(input_size, hid_size, kernel_size, num_classes)
 
     def forward(self, x):
@@ -20,8 +23,11 @@ class CNNWrapper(LightningModule):
 
     def training_step(self, batch, batch_idx):
         data, target = batch
-        out = self(data)
-        loss = torch.nn.functional.cross_entropy(out, target)
+        logits = self(data)
+        loss = torch.nn.functional.cross_entropy(logits, target)
+        preds = torch.argmax(logits, dim=1)
+        acc = accuracy_score(preds.detach().cpu().numpy(), target.detach().cpu().numpy())
+        self.log("train_acc", acc, on_step=True, on_epoch=True, prog_bar=True)
         self.log('train_loss', loss, prog_bar=True)
         return loss
 

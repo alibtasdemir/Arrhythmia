@@ -5,7 +5,6 @@ import torch
 
 class Swish(nn.Module):
     def forward(self, x):
-        #sigmoid_func = Sigmoid()
         return x * torch.sigmoid(x)
 
 
